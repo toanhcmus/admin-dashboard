@@ -102,31 +102,31 @@ const GameManagement = ({ accessToken }) => {
     }
   };  
 
-  const handleToggleStatus = async (game) => {
-    try {
-      const updatedStatus = game.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+  // const handleToggleStatus = async (game) => {
+  //   try {
+  //     const updatedStatus = game.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
   
-      await axios.post(
-        `${API_HOST}/game-admin/update`,
-        {
-          id: game.id,
-          name: game.name,
-          description: game.description,
-          status: updatedStatus,
-        },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
+  //     await axios.post(
+  //       `${API_HOST}/game-admin/update`,
+  //       {
+  //         id: game.id,
+  //         name: game.name,
+  //         description: game.description,
+  //         status: updatedStatus,
+  //       },
+  //       { headers: { Authorization: `Bearer ${accessToken}` } }
+  //     );
   
-      setGames((prevGames) =>
-        prevGames.map((g) =>
-          g.id === game.id ? { ...g, status: updatedStatus } : g
-        )
-      );
-      setSuccess(`Game ${updatedStatus === "ACTIVE" ? "activated" : "deactivated"} successfully.`);
-    } catch (err) {
-      setError("Failed to toggle game status.");
-    }
-  };
+  //     setGames((prevGames) =>
+  //       prevGames.map((g) =>
+  //         g.id === game.id ? { ...g, status: updatedStatus } : g
+  //       )
+  //     );
+  //     setSuccess(`Game ${updatedStatus === "ACTIVE" ? "activated" : "deactivated"} successfully.`);
+  //   } catch (err) {
+  //     setError("Failed to toggle game status.");
+  //   }
+  // };
   
   return (
     <div>
@@ -158,7 +158,7 @@ const GameManagement = ({ accessToken }) => {
                 </span>
               </td>
               <td>
-                {/* Nút kích hoạt/khoá */}
+                {/* Nút kích hoạt/khoá
                 <Button
                   variant={game.status === "ACTIVE" ? "secondary" : "success"}
                   size="sm"
@@ -166,7 +166,7 @@ const GameManagement = ({ accessToken }) => {
                   onClick={() => handleToggleStatus(game)}
                 >
                   <i className={game.status === "ACTIVE" ? "fas fa-check" : "fas fa-ban"}></i>
-                </Button>
+                </Button> */}
                 {/* Nút Edit */}
                 <Button
                   variant="warning"

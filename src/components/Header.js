@@ -42,19 +42,12 @@ const Header = ({ setAccessToken }) => {
   return (
     <Navbar expand="lg" className="navbar-custom">
       <Container>
-        <Navbar.Brand as={Link} to="/dashboard" className="navbar-brand">
+        <Navbar.Brand as={Link} to="/reports" className="navbar-brand">
           Admin Dashboard
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbar-nav" />
         <Navbar.Collapse id="navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link
-              as={Link}
-              to="/dashboard"
-              className={location.pathname === "/dashboard" ? "active-link" : ""}
-            >
-              Dashboard
-            </Nav.Link>
             <Nav.Link
               as={Link}
               to="/users"
