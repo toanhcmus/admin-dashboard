@@ -1,29 +1,16 @@
-/* Cấu trúc chung */
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f4f9;
+/* Reset toàn bộ */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-/* Cấu trúc cho header */
-header {
-  background-color: #4CAF50;
-  color: white;
-  padding: 15px;
-}
-
-header h1 {
-  margin: 0;
-}
-
-/* Navbar Bootstrap */
-.navbar {
-  margin-bottom: 20px;
-}
-
-.nav-link.active {
-  background-color: #d1e7dd;
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  max-height: calc(100vh); /* Chiều cao tối đa */
+  overflow-y: auto; /* Bật scroll dọc */
 }
 
 /* Cải tiến layout chính */
@@ -169,15 +156,6 @@ button:disabled {
   margin-bottom: 20px;
 }
 
-/* Thanh điều hướng */
-.navbar {
-  margin-bottom: 20px;
-}
-
-.nav-link.active {
-  background-color: #d1e7dd;
-}
-
 /* Margin cho các phần của ứng dụng */
 .container {
   margin-top: 20px;
@@ -187,74 +165,10 @@ section {
   margin-bottom: 30px;
 }
 
-/* Tùy chỉnh cho Navbar */
-.navbar-custom {
-  background: linear-gradient(to right, #4CAF50, #2C9C6C); /* Màu gradient xanh lá */
-  border-bottom: 2px solid #2C9C6C; /* Viền dưới cho thanh navbar */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Bóng đổ nhẹ cho thanh navbar */
-}
-
-.navbar-custom .navbar-brand {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #fff;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: color 0.3s ease;
-}
-
-.navbar-custom .navbar-brand:hover {
-  color: #ffdd57; /* Màu khi hover lên logo */
-}
-
-.navbar-custom .nav-link-custom {
-  color: #fff !important;
-  font-size: 1rem;
-  font-weight: 500;
-  padding: 10px 20px;
-  text-transform: capitalize;
-  transition: color 0.3s ease, background-color 0.3s ease;
-}
-
-.navbar-custom .nav-link-custom:hover,
-.navbar-custom .nav-link-custom.active {
-  color: #fff;
-  background-color: #45a049; /* Màu nền khi hover hoặc mục active */
-  border-radius: 30px; /* Bo góc các link */
-}
-
-.navbar-custom .navbar-toggler {
-  border-color: #fff; /* Đổi màu của nút toggler (hamburger menu) */
-}
-
-.navbar-custom .navbar-toggler-icon {
-  background-color: #fff; /* Màu của icon khi mở menu */
-}
-
 /* Các media query để navbar responsive */
 @media (max-width: 992px) {
   .navbar-custom .nav-link-custom {
     font-size: 0.9rem;
     padding: 8px 15px;
   }
-}
-
-/* Cải tiến hiệu ứng hover cho Navbar */
-.navbar-custom .nav-link-custom:hover {
-  color: #fff;
-  background-color: #3d8e41;
-  border-radius: 30px;
-}
-
-/* Thêm hiệu ứng cho navbar logo */
-.navbar-custom .navbar-brand {
-  font-size: 1.9rem;
-  font-weight: 600;
-  color: #fff;
-  letter-spacing: 1px;
-  transition: color 0.3s ease;
-}
-
-.navbar-custom .navbar-brand:hover {
-  color: #ffdd57;
 }

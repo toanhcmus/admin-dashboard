@@ -1,0 +1,35 @@
+/* Làm nổi bật bảng */
+.table-highlight {
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .table-highlight thead th {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: #343a40;
+    color: #ffffff;
+    text-align: center;
+  }
+  
+  .table-highlight tbody tr {
+    transition: background 0.3s ease;
+  }
+  
+  .table-highlight tbody tr:hover {
+    background-color: #f1f3f5;
+  }
+  
+  /* Bóng đổ */
+  .table-highlight {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Nút hành động */
+  button i {
+    font-size: 0.85rem;
+    margin-right: 5px;
+  }
+  

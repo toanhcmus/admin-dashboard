@@ -1,23 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Form, Modal } from "react-bootstrap";
+import { Table, Button, Modal, Form, Alert } from "react-bootstrap";
 import axios from "axios";
+import './GameManagement.css';
 
-const GameManagement = () => {
+const GameManagement = ({ accessToken }) => {
   const [games, setGames] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentGame, setCurrentGame] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  // Lấy danh sách trò chơi
+  const API_HOST = "http://localhost:1001";
+
+  // Lấy danh sách trò chơi từ API
   useEffect(() => {
-    axios.get("http://localhost:5000/api/games")
-      .then((response) => {
-        setGames(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching games!", error);
-      });
+    fetchGames();
   }, []);
+
+  const fetchGames = async () => {
+    try {
+      const response = await axios.get(`${API_HOST}/game-unauth/all`);
+      setGames(response.data);
+    } catch (err) {
+      setError("Failed to fetch games.");
+    }
+  };
 
   const handleEditGame = (game) => {
     setCurrentGame(game);
@@ -26,80 +34,116 @@ const GameManagement = () => {
   };
 
   const handleAddGame = () => {
-    setCurrentGame({ name: "", type: "Trivia", status: "inactive", guide: "", exchangeable_items: false });
+    setCurrentGame({ name: "", description: "", status: "ACTIVE" });
     setIsEditing(false);
     setShowModal(true);
   };
 
-  const handleSaveGame = () => {
-    if (isEditing) {
-      // Cập nhật trò chơi
-      axios.put(`http://localhost:5000/api/games/${currentGame.id}`, currentGame)
-        .then(() => {
-          setGames((prevGames) =>
-            prevGames.map((game) =>
-              game.id === currentGame.id ? currentGame : game
-            )
-          );
-          setShowModal(false);
-        })
-        .catch((error) => {
-          console.error("Error updating game!", error);
-        });
-    } else {
-      // Thêm trò chơi mới
-      axios.post("http://localhost:5000/api/games", currentGame)
-        .then((response) => {
-          setGames([...games, response.data]);
-          setShowModal(false);
-        })
-        .catch((error) => {
-          console.error("Error adding game!", error);
-        });
-    }
-  };
-
-  const handleDeleteGame = (gameId) => {
-    axios.delete(`http://localhost:5000/api/games/${gameId}`)
-      .then(() => {
-        setGames((prevGames) => prevGames.filter((game) => game.id !== gameId));
-      })
-      .catch((error) => {
-        console.error("Error deleting game!", error);
-      });
-  };
-
-  const handleActivateGame = (gameId) => {
-    axios.put(`http://localhost:5000/api/games/${gameId}/activate`)
-      .then(() => {
+  const handleSaveGame = async () => {
+    setError("");
+    setSuccess("");
+  
+    try {
+      if (isEditing) {
+        // Cập nhật trò chơi
+        await axios.post(
+          `${API_HOST}/game-admin/update`,
+          {
+            id: currentGame.id,
+            name: currentGame.name,
+            description: currentGame.description,
+            status: currentGame.status,
+          },
+          { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
+  
         setGames((prevGames) =>
           prevGames.map((game) =>
-            game.id === gameId ? { ...game, status: "active" } : game
+            game.id === currentGame.id ? currentGame : game
           )
         );
-        alert("Trò chơi đã được kích hoạt thành công!");
-      })
-      .catch((error) => {
-        console.error("Error activating game!", error);
-        alert("Có lỗi xảy ra khi kích hoạt trò chơi!");
-      });
+        fetchGames();
+        setSuccess("Game updated successfully.");
+      } else {
+        // Tạo trò chơi mới
+        const response = await axios.post(
+          `${API_HOST}/game-admin/create`,
+          {
+            name: currentGame.name,
+            description: currentGame.description,
+            status: currentGame.status,
+          },
+          { headers: { Authorization: `Bearer ${accessToken}` } }
+        );
+  
+        // setGames([...games, response.data]);
+        fetchGames();
+        setSuccess("Game added successfully.");
+      }
+      setShowModal(false);
+    } catch (err) {
+      setError("Failed to save game.");
+    }
   };
+  
+  const handleDeleteGame = async (gameId) => {
+    try {
+      await axios.post(
+        `${API_HOST}/game-admin/delete`,
+        { id: gameId },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+  
+      // setGames((prevGames) => prevGames.filter((game) => game.id !== gameId));
+      fetchGames();
+      setSuccess("Game deleted successfully.");
+    } catch (err) {
+      setError("Failed to delete game.");
+    }
+  };  
 
+  const handleToggleStatus = async (game) => {
+    try {
+      const updatedStatus = game.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+  
+      await axios.post(
+        `${API_HOST}/game-admin/update`,
+        {
+          id: game.id,
+          name: game.name,
+          description: game.description,
+          status: updatedStatus,
+        },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+  
+      setGames((prevGames) =>
+        prevGames.map((g) =>
+          g.id === game.id ? { ...g, status: updatedStatus } : g
+        )
+      );
+      setSuccess(`Game ${updatedStatus === "ACTIVE" ? "activated" : "deactivated"} successfully.`);
+    } catch (err) {
+      setError("Failed to toggle game status.");
+    }
+  };
+  
   return (
     <div>
-      <h2>Quản lý Trò Chơi</h2>
+      <h2>Game Management</h2>
+      {error && <Alert variant="danger">{error}</Alert>}
+      {success && <Alert variant="success">{success}</Alert>}
       <Button variant="primary" className="mb-3" onClick={handleAddGame}>
-        Thêm Trò Chơi
+        Add Game
       </Button>
-      <Table striped bordered hover>
-        <thead>
+      <Table striped bordered hover responsive className="table-highlight shadow-sm">
+        <thead className="table-dark">
           <tr>
             <th>ID</th>
-            <th>Tên trò chơi</th>
-            <th>Loại trò chơi</th>
-            <th>Trạng thái</th>
-            <th>Cho phép trao đổi vật phẩm</th>
-            <th>Thao tác</th>
+            <th>Game Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -107,82 +151,98 @@ const GameManagement = () => {
             <tr key={game.id}>
               <td>{game.id}</td>
               <td>{game.name}</td>
-              <td>{game.type}</td>
-              <td>{game.status === "active" ? "Hoạt động" : "Ẩn"}</td>
-              <td>{game.exchangeable_items ? "Có" : "Không"}</td>
+              <td>{game.description}</td>
               <td>
-                <Button variant="warning" size="sm" onClick={() => handleEditGame(game)}>Sửa</Button>{" "}
-                <Button variant="danger" size="sm" onClick={() => handleDeleteGame(game.id)}>Xóa</Button>{" "}
-                {game.status !== "active" && (
-                  <Button variant="success" size="sm" onClick={() => handleActivateGame(game.id)}>
-                    Kích hoạt
-                  </Button>
-                )}
+                <span className={`badge ${game.status === "ACTIVE" ? "bg-success" : "bg-danger"}`}>
+                  {game.status}
+                </span>
+              </td>
+              <td>
+                {/* Nút kích hoạt/khoá */}
+                <Button
+                  variant={game.status === "ACTIVE" ? "secondary" : "success"}
+                  size="sm"
+                  className="me-2"
+                  onClick={() => handleToggleStatus(game)}
+                >
+                  <i className={game.status === "ACTIVE" ? "fas fa-check" : "fas fa-ban"}></i>
+                </Button>
+                {/* Nút Edit */}
+                <Button
+                  variant="warning"
+                  size="sm"
+                  className="me-2"
+                  onClick={() => handleEditGame(game)}
+                >
+                  <i className="fas fa-edit"></i>
+                </Button>
+                {/* Nút Delete */}
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => handleDeleteGame(game.id)}
+                >
+                  <i className="fas fa-trash"></i>
+                </Button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
 
+
       {/* Modal thêm/sửa trò chơi */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{isEditing ? "Sửa Trò Chơi" : "Thêm Trò Chơi"}</Modal.Title>
+          <Modal.Title>{isEditing ? "Edit Game" : "Add Game"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Tên trò chơi</Form.Label>
+              <Form.Label>Game Name</Form.Label>
               <Form.Control
                 type="text"
                 value={currentGame?.name || ""}
-                onChange={(e) => setCurrentGame({ ...currentGame, name: e.target.value })}
+                onChange={(e) =>
+                  setCurrentGame({ ...currentGame, name: e.target.value })
+                }
+                required
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Loại trò chơi</Form.Label>
-              <Form.Select
-                value={currentGame?.type || ""}
-                onChange={(e) => setCurrentGame({ ...currentGame, type: e.target.value })}
-              >
-                <option value="Trivia">Quiz</option>
-                <option value="Casual">Shake</option>
-              </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Hướng dẫn chơi</Form.Label>
+              <Form.Label>Description</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
-                value={currentGame?.guide || ""}
-                onChange={(e) => setCurrentGame({ ...currentGame, guide: e.target.value })}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Check
-                type="checkbox"
-                label="Cho phép trao đổi vật phẩm"
-                checked={currentGame?.exchangeable_items || false}
+                value={currentGame?.description || ""}
                 onChange={(e) =>
-                  setCurrentGame({ ...currentGame, exchangeable_items: e.target.checked })
+                  setCurrentGame({ ...currentGame, description: e.target.value })
                 }
+                required
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Trạng thái</Form.Label>
+              <Form.Label>Status</Form.Label>
               <Form.Select
                 value={currentGame?.status || ""}
-                onChange={(e) => setCurrentGame({ ...currentGame, status: e.target.value })}
+                onChange={(e) =>
+                  setCurrentGame({ ...currentGame, status: e.target.value })
+                }
+                required
               >
-                <option value="active">Hoạt động</option>
-                <option value="inactive">Ẩn</option>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
               </Form.Select>
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>Hủy</Button>
-          <Button variant="primary" onClick={handleSaveGame}>Lưu</Button>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleSaveGame}>
+            Save
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>

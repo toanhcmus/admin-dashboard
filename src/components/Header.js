@@ -1,69 +1,124 @@
 import React, { useState } from "react";
-import { Navbar, Nav, Container } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Menu, MenuItem, IconButton, Badge } from "@mui/material";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import { Navbar, Nav, Container, Button } from "react-bootstrap";
+import { Link, useLocation } from "react-router-dom";
+import './Header.css';
 
-const Header = () => {
-  const [active, setActive] = useState("dashboard");
+const Header = ({ setAccessToken }) => {
+  const location = useLocation();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: "New user registered", read: false },
+    { id: 2, title: "Event pending approval", read: false },
+    { id: 3, title: "System maintenance scheduled", read: true },
+  ]);
 
-  const handleNavClick = (key) => {
-    setActive(key);
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const handleOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMarkAsRead = (id) => {
+    setNotifications((prev) =>
+      prev.map((notif) =>
+        notif.id === id ? { ...notif, read: true } : notif
+      )
+    );
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    window.location.href = "/";
   };
 
   return (
     <Navbar expand="lg" className="navbar-custom">
       <Container>
-        <Navbar.Brand href="#home" className="navbar-brand">
+        <Navbar.Brand as={Link} to="/dashboard" className="navbar-brand">
           Admin Dashboard
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbar-nav" />
         <Navbar.Collapse id="navbar-nav">
-          <Nav className="ml-auto">
+          <Nav className="ms-auto">
             <Nav.Link
               as={Link}
               to="/dashboard"
-              onClick={() => handleNavClick("dashboard")}
-              active={active === "dashboard"}
-              className="nav-link-custom"
+              className={location.pathname === "/dashboard" ? "active-link" : ""}
             >
               Dashboard
             </Nav.Link>
             <Nav.Link
               as={Link}
               to="/users"
-              onClick={() => handleNavClick("users")}
-              active={active === "users"}
-              className="nav-link-custom"
+              className={location.pathname === "/users" ? "active-link" : ""}
             >
-              Quản lý Người Dùng
+              User Management
             </Nav.Link>
             <Nav.Link
               as={Link}
               to="/games"
-              onClick={() => handleNavClick("games")}
-              active={active === "games"}
-              className="nav-link-custom"
+              className={location.pathname === "/games" ? "active-link" : ""}
             >
-              Quản lý Trò Chơi
+              Game Management
             </Nav.Link>
             <Nav.Link
               as={Link}
               to="/events"
-              onClick={() => handleNavClick("events")}
-              active={active === "events"}
-              className="nav-link-custom"
+              className={location.pathname === "/events" ? "active-link" : ""}
             >
-              Quản lý Sự Kiện
+              Event Management
             </Nav.Link>
             <Nav.Link
               as={Link}
               to="/reports"
-              onClick={() => handleNavClick("reports")}
-              active={active === "reports"}
-              className="nav-link-custom"
+              className={location.pathname === "/reports" ? "active-link" : ""}
             >
-              Báo Cáo
+              Reports
             </Nav.Link>
           </Nav>
+
+          {/* Biểu tượng thông báo */}
+          <IconButton color="inherit" onClick={handleOpen} style={{ marginRight: "1rem" }}>
+            <Badge badgeContent={unreadCount} color="error">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
+
+          {/* Dropdown thông báo */}
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+            keepMounted
+          >
+            <MenuItem disabled>
+              <strong>Notifications</strong>
+            </MenuItem>
+            {notifications.map((notif) => (
+              <MenuItem
+                key={notif.id}
+                onClick={() => handleMarkAsRead(notif.id)}
+                style={{
+                  fontWeight: notif.read ? "normal" : "bold",
+                  whiteSpace: "normal",
+                }}
+              >
+                {notif.title}
+              </MenuItem>
+            ))}
+          </Menu>
+
+          <Button variant="outline-light" onClick={handleLogout}>
+            Logout
+          </Button>
         </Navbar.Collapse>
       </Container>
     </Navbar>
