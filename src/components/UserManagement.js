@@ -218,13 +218,13 @@ const UserManagement = ({ accessToken }) => {
 
   return (
     <div>
-      <h2>User Management</h2>
+      <h2>Quản lý người dùng</h2>
       <div className="mb-3 d-flex justify-content-between">
         {/* Thanh tìm kiếm */}
         <input
           type="text"
           className="form-control"
-          placeholder="Search by username..."
+          placeholder="Tìm kiếm theo username"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           style={{ width: "300px" }}
@@ -236,10 +236,10 @@ const UserManagement = ({ accessToken }) => {
           onChange={(e) => setFilterRole(e.target.value)}
           style={{ width: "200px" }}
         >
-          <option value="All">All Roles</option>
-          <option value="USER">User</option>
-          <option value="PARTNER">Partner</option>
-          <option value="ADMIN">Admin</option>
+          <option value="All">Tất cả role</option>
+          <option value="USER">Người dùng</option>
+          <option value="PARTNER">Đối tác</option>
+          <option value="ADMIN">Quản trị viên</option>
         </select>
       </div>
 
@@ -248,10 +248,10 @@ const UserManagement = ({ accessToken }) => {
       {success && <Alert variant="success">{success}</Alert>}
       <div className="mb-3">
         <Button variant="primary" onClick={() => handleAdd(false)} className="me-2">
-          Add User
+          Thêm người dùng
         </Button>
         <Button variant="success" onClick={() => handleAdd(true)}>
-          Add Partner
+          Thêm đối tác
         </Button>
       </div>
       <Table striped bordered hover responsive className="table-highlight shadow-sm">
@@ -259,10 +259,10 @@ const UserManagement = ({ accessToken }) => {
           <tr>
             <th>ID</th>
             <th>Username</th>
-            <th>Created Date</th>
-            <th>Status</th>
-            <th>Role</th>
-            <th>Actions</th>
+            <th>Ngày tạo</th>
+            <th>Trạng thái</th>
+            <th>Quyền hạn</th>
+            <th>Thao tác</th>
           </tr>
         </thead>
         <tbody>
@@ -324,11 +324,11 @@ const UserManagement = ({ accessToken }) => {
           <Modal.Title>
             {isEditing
               ? isPartner
-                ? "Edit Partner"
-                : "Edit User"
+                ? "Sửa thông tin đối tác"
+                : "Sửa thông tin người dùng"
               : isPartner
-              ? "Add Partner"
-              : "Add User"}
+              ? "Thêm đối tác"
+              : "Thêm người dùng"}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -343,11 +343,11 @@ const UserManagement = ({ accessToken }) => {
                 setCurrentUser({ ...currentUser, username: e.target.value })
               }
               required
-              placeholder="Enter username"
+              placeholder="Nhập tên đăng nhập"
             />
           </Form.Group>
           <Form.Group controlId="password" className="mb-3">
-            <Form.Label>Password</Form.Label>
+            <Form.Label>Mật khẩu</Form.Label>
             <Form.Control
               type="password"
               value={currentUser?.password || ""}
@@ -355,7 +355,7 @@ const UserManagement = ({ accessToken }) => {
                 setCurrentUser({ ...currentUser, password: e.target.value })
               }
               required
-              placeholder="Enter password"
+              placeholder="Nhập mật khẩu"
             />
           </Form.Group>
 
@@ -371,11 +371,11 @@ const UserManagement = ({ accessToken }) => {
                     setCurrentUser({ ...currentUser, avatar: e.target.value })
                   }
                   required
-                  placeholder="Enter avatar"
+                  placeholder="Thêm avatar"
                 />
               </Form.Group>
               <Form.Group controlId="companyName" className="mb-3">
-                <Form.Label>Company Name</Form.Label>
+                <Form.Label>Tên công ty</Form.Label>
                 <Form.Control
                   type="text"
                   value={currentUser?.companyName || ""}
@@ -383,11 +383,11 @@ const UserManagement = ({ accessToken }) => {
                     setCurrentUser({ ...currentUser, companyName: e.target.value })
                   }
                   required
-                  placeholder="Enter company name"
+                  placeholder="Nhập tên công ty"
                 />
               </Form.Group>
               <Form.Group controlId="field" className="mb-3">
-                <Form.Label>Field</Form.Label>
+                <Form.Label>Lĩnh vực</Form.Label>
                 <Form.Control
                   type="text"
                   value={currentUser?.field || ""}
@@ -395,11 +395,11 @@ const UserManagement = ({ accessToken }) => {
                     setCurrentUser({ ...currentUser, field: e.target.value })
                   }
                   required
-                  placeholder="Enter field of business"
+                  placeholder="Nhập lĩnh vực kinh doanh"
                 />
               </Form.Group>
               <Form.Group controlId="address" className="mb-3">
-                <Form.Label>Address</Form.Label>
+                <Form.Label>Địa chỉ</Form.Label>
                 <Form.Control
                   type="text"
                   value={currentUser?.address || ""}
@@ -407,11 +407,11 @@ const UserManagement = ({ accessToken }) => {
                     setCurrentUser({ ...currentUser, address: e.target.value })
                   }
                   required
-                  placeholder="Enter address"
+                  placeholder="Nhập địa chỉ"
                 />
               </Form.Group>
               <Form.Group controlId="gpsLat" className="mb-3">
-                <Form.Label>Latitude</Form.Label>
+                <Form.Label>gpsLat</Form.Label>
                 <Form.Control
                   type="number"
                   step="any"
@@ -420,11 +420,11 @@ const UserManagement = ({ accessToken }) => {
                     setCurrentUser({ ...currentUser, gpsLat: parseFloat(e.target.value) || 0 })
                   }
                   required
-                  placeholder="Enter latitude"
+                  placeholder="Nhập gpsLat"
                 />
               </Form.Group>
               <Form.Group controlId="gpsLong" className="mb-3">
-                <Form.Label>Longitude</Form.Label>
+                <Form.Label>gpsLong</Form.Label>
                 <Form.Control
                   type="number"
                   step="any"
@@ -433,11 +433,11 @@ const UserManagement = ({ accessToken }) => {
                     setCurrentUser({ ...currentUser, gpsLong: parseFloat(e.target.value) || 0 })
                   }
                   required
-                  placeholder="Enter longitude"
+                  placeholder="Nhập gpsLong"
                 />
               </Form.Group>
               <Form.Group controlId="status" className="mb-3">
-                <Form.Label>Status</Form.Label>
+                <Form.Label>Trạng thái</Form.Label>
                 <Form.Control
                   type="text"
                   value={currentUser?.status || ""}
@@ -445,7 +445,7 @@ const UserManagement = ({ accessToken }) => {
                     setCurrentUser({ ...currentUser, status: e.target.value })
                   }
                   required
-                  placeholder="Enter status"
+                  placeholder="Nhập trạng thái"
                 />
               </Form.Group>
             </>
@@ -453,7 +453,7 @@ const UserManagement = ({ accessToken }) => {
             // Nếu là User
             <>
               <Form.Group controlId="firstName" className="mb-3">
-                <Form.Label>First Name</Form.Label>
+                <Form.Label>Họ</Form.Label>
                 <Form.Control
                   type="text"
                   value={currentUser?.firstName || ""}
@@ -461,11 +461,11 @@ const UserManagement = ({ accessToken }) => {
                     setCurrentUser({ ...currentUser, firstName: e.target.value })
                   }
                   required
-                  placeholder="Enter first name"
+                  placeholder="Nhập họ"
                 />
               </Form.Group>
               <Form.Group controlId="lastName" className="mb-3">
-                <Form.Label>Last Name</Form.Label>
+                <Form.Label>Tên</Form.Label>
                 <Form.Control
                   type="text"
                   value={currentUser?.lastName || ""}
@@ -473,7 +473,7 @@ const UserManagement = ({ accessToken }) => {
                     setCurrentUser({ ...currentUser, lastName: e.target.value })
                   }
                   required
-                  placeholder="Enter last name"
+                  placeholder="Nhập tên"
                 />
               </Form.Group>
               <Form.Group controlId="email" className="mb-3">
@@ -485,11 +485,11 @@ const UserManagement = ({ accessToken }) => {
                     setCurrentUser({ ...currentUser, email: e.target.value })
                   }
                   required
-                  placeholder="Enter email"
+                  placeholder="Nhập email"
                 />
               </Form.Group>
               <Form.Group controlId="phone" className="mb-3">
-                <Form.Label>Phone</Form.Label>
+                <Form.Label>Số điện thoại</Form.Label>
                 <Form.Control
                   type="text"
                   value={currentUser?.phone || ""}
@@ -497,7 +497,7 @@ const UserManagement = ({ accessToken }) => {
                     setCurrentUser({ ...currentUser, phone: e.target.value })
                   }
                   required
-                  placeholder="Enter phone number"
+                  placeholder="Nhập số điện thoại"
                 />
               </Form.Group>
               <Form.Group controlId="facebook" className="mb-3">
@@ -509,7 +509,7 @@ const UserManagement = ({ accessToken }) => {
                     setCurrentUser({ ...currentUser, facebook: e.target.value })
                   }
                   required
-                  placeholder="Enter Facebook profile"
+                  placeholder="Nhập thông tin facebook"
                 />
               </Form.Group>
               <Form.Group controlId="avatar" className="mb-3">
@@ -521,7 +521,7 @@ const UserManagement = ({ accessToken }) => {
                     setCurrentUser({ ...currentUser, avatar: e.target.value })
                   }
                   required
-                  placeholder="Enter avatar URL"
+                  placeholder="Nhập liên kết avatar"
                 />
               </Form.Group>
             </>

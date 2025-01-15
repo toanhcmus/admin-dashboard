@@ -19,7 +19,7 @@ function App() {
   
   return (
     <Router>
-    {accessToken !== "" && <Header />}
+    {accessToken !== "" && <Header accessToken={accessToken} />}
     <div className="container mt-4">
       <Routes>
         {/* Trang Login */}

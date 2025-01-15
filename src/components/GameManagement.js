@@ -73,8 +73,7 @@ const GameManagement = ({ accessToken }) => {
           },
           { headers: { Authorization: `Bearer ${accessToken}` } }
         );
-  
-        // setGames([...games, response.data]);
+        setGames([...games, response.data]);
         fetchGames();
         setSuccess("Game added successfully.");
       }
@@ -101,20 +100,20 @@ const GameManagement = ({ accessToken }) => {
   };  
   return (
     <div>
-      <h2>Game Management</h2>
+      <h2>Quản lý trò chơi</h2>
       {error && <Alert variant="danger">{error}</Alert>}
       {success && <Alert variant="success">{success}</Alert>}
       <Button variant="primary" className="mb-3" onClick={handleAddGame}>
-        Add Game
+        Thêm trò chơi
       </Button>
       <Table striped bordered hover responsive className="table-highlight shadow-sm">
         <thead className="table-dark">
           <tr>
             <th>ID</th>
-            <th>Game Name</th>
-            <th>Description</th>
-            <th>Status</th>
-            <th>Actions</th>
+            <th>Tên trò chơi</th>
+            <th>Mô tả</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
           </tr>
         </thead>
         <tbody>
@@ -165,12 +164,12 @@ const GameManagement = ({ accessToken }) => {
       {/* Modal thêm/sửa trò chơi */}
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{isEditing ? "Edit Game" : "Add Game"}</Modal.Title>
+          <Modal.Title>{isEditing ? "Sửa thông tin" : "Thêm trò chơi"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Game Name</Form.Label>
+              <Form.Label>Tên trò chơi</Form.Label>
               <Form.Control
                 type="text"
                 value={currentGame?.name || ""}
@@ -181,7 +180,7 @@ const GameManagement = ({ accessToken }) => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Description</Form.Label>
+              <Form.Label>Mô tả</Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
@@ -193,7 +192,7 @@ const GameManagement = ({ accessToken }) => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Status</Form.Label>
+              <Form.Label>Trạng thái</Form.Label>
               <Form.Select
                 value={currentGame?.status || ""}
                 onChange={(e) =>

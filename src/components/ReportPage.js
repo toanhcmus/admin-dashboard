@@ -47,11 +47,16 @@ const ReportPage = () => {
     }
   };
 
+  useEffect(() => {
+    fetchNewAccounts("USER");
+    fetchNewAccounts("PARTNER");
+  }, [days]); // Thêm `days` làm phụ thuộc
+  
   const fetchNewAccounts = async (role) => {
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_URL_AUTH}/auth/unauthen/statistic/getNewlyRegisteredAccounts`,
-        { role, days: 30 }
+        { role, days}
       );
       console.log(response.data);
       if (role === "USER") setNewUsers(response.data);
@@ -69,7 +74,7 @@ const ReportPage = () => {
     labels: eventStats.map((stat) => new Date(stat.day).toLocaleDateString()),
     datasets: [
       {
-        label: "Events Per Day",
+        label: "Số sự kiện theo ngày",
         data: eventStats.map((stat) => stat.count),
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         borderColor: "rgba(75, 192, 192, 1)",
@@ -86,14 +91,14 @@ const ReportPage = () => {
     labels: newUsers.map((stat) => stat.date),
     datasets: [
       {
-        label: "New Users",
+        label: "Người dùng mới",
         data: newUsers.map((stat) => stat.count),
         backgroundColor: "rgba(54, 162, 235, 0.2)",
         borderColor: "rgba(54, 162, 235, 1)",
         borderWidth: 2,
       },
       {
-        label: "New Partners",
+        label: "Đối tác mới",
         data: newPartners.map((stat) => stat.count),
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         borderColor: "rgba(255, 99, 132, 1)",
@@ -104,7 +109,7 @@ const ReportPage = () => {
 
   return (
     <Container fluid>
-      <h2 className="my-4">Reports</h2>
+      <h2 className="my-4">Báo cáo thống kê</h2>
       {/* Bộ lọc ngày */}
       <Card className="mb-4">
         <Card.Body>
@@ -112,7 +117,7 @@ const ReportPage = () => {
             <Row>
               <Col md={5}>
                 <Form.Group controlId="startDate">
-                  <Form.Label>Start Date</Form.Label>
+                  <Form.Label>Ngày bắt đầu</Form.Label>
                   <Form.Control
                     type="date"
                     value={startDate}
@@ -122,7 +127,7 @@ const ReportPage = () => {
               </Col>
               <Col md={5}>
                 <Form.Group controlId="endDate">
-                  <Form.Label>End Date</Form.Label>
+                  <Form.Label>Ngày kết thúc</Form.Label>
                   <Form.Control
                     type="date"
                     value={endDate}
@@ -145,7 +150,7 @@ const ReportPage = () => {
         <Col>
           <Card>
             <Card.Body>
-              <h5>Events Per Day</h5>
+              <h5>Số sự kiện theo ngày</h5>
               <Line data={eventStatsData} />
             </Card.Body>
           </Card>
@@ -157,18 +162,18 @@ const ReportPage = () => {
         <Col>
           <Card>
             <Card.Body>
-              <h5>Newly Registered Accounts</h5>
+              <h5>Số tài khoản mới</h5>
 
               {/* Dropdown chọn số ngày */}
               <Form.Group className="mb-3" controlId="daysSelect">
-                <Form.Label>Days to Display</Form.Label>
+                <Form.Label>Chọn số ngày</Form.Label>
                 <Form.Select
                   value={days}
                   onChange={(e) => setDays(parseInt(e.target.value, 10))}
                 >
-                  <option value={7}>Last 7 Days</option>
-                  <option value={14}>Last 14 Days</option>
-                  <option value={30}>Last 30 Days</option>
+                  <option value={7}>7 ngày gần nhất</option>
+                  <option value={14}>14 ngày gần nhất</option>
+                  <option value={30}>30 ngày gần nhất</option>
                 </Form.Select>
               </Form.Group>
 
@@ -177,7 +182,7 @@ const ReportPage = () => {
                 <Col>
                   <Card>
                     <Card.Body>
-                      <h6>Total New Users</h6>
+                      <h6>Tổng số người dùng mới</h6>
                       <h4>{calculateTotalAccounts(newUsers)}</h4>
                     </Card.Body>
                   </Card>
@@ -185,7 +190,7 @@ const ReportPage = () => {
                 <Col>
                   <Card>
                     <Card.Body>
-                      <h6>Total New Partners</h6>
+                      <h6>Tổng số đối tác mới</h6>
                       <h4>{calculateTotalAccounts(newPartners)}</h4>
                     </Card.Body>
                   </Card>

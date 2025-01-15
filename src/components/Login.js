@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Form, Button, Alert, Container } from "react-bootstrap";
 import axios from "axios";
-import { initWebSocket, closeWebSocket } from "../services/socketService";
 
 const Login = ({ setAccessToken }) => {
   const [username, setUsername] = useState("");
@@ -23,10 +22,7 @@ const Login = ({ setAccessToken }) => {
   
       localStorage.setItem("accessToken", accessToken);
       setAccessToken(accessToken);
-  
-      // Khởi tạo WebSocket
-      initWebSocket(accessToken);
-  
+
       window.location.href = "/";
     } catch (err) {
       setError(err.response?.data?.message || err.message || "Invalid login.");
@@ -38,24 +34,24 @@ const Login = ({ setAccessToken }) => {
   return (
     <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh" }}>
       <div className="login-form-container">
-        <h2>Login</h2>
+        <h2>Đăng nhập - VOU ADMIN</h2>
         {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={handleLogin}>
           <Form.Group controlId="username" className="mb-3">
             <Form.Label>Username</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter your username"
+              placeholder="Nhập username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
             />
           </Form.Group>
           <Form.Group controlId="password" className="mb-3">
-            <Form.Label>Password</Form.Label>
+            <Form.Label>Mật khẩu</Form.Label>
             <Form.Control
               type="password"
-              placeholder="Enter your password"
+              placeholder="Nhập mật khẩu"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -67,7 +63,7 @@ const Login = ({ setAccessToken }) => {
             className="w-100"
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
           </Button>
         </Form>
       </div>
