@@ -3,9 +3,6 @@ import { Table, Button, Modal, Form, Alert } from "react-bootstrap";
 import axios from "axios";
 import "./UserManagement.css";
 
-const API_HOST = process.env.REACT_APP_API_HOST;
-const API_PORT = process.env.REACT_APP_API_PORT;
-
 const UserManagement = ({ accessToken }) => {
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -19,7 +16,7 @@ const UserManagement = ({ accessToken }) => {
 
   const fetchAccounts = async () => {
     try {
-      const response = await axios.get(`${API_HOST}:${API_PORT}/unauthen/getAllAccounts`, {
+      const response = await axios.get(`${process.env.REACT_APP_URL_AUTH}/auth/unauthen/getAllAccounts`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       setUsers(response.data);
@@ -37,8 +34,8 @@ const UserManagement = ({ accessToken }) => {
   const handleToggleStatus = async (user) => {
     try {
       const apiUrl = user.partner
-        ? `${API_HOST}:${API_PORT}/admin/update/partner/${user.id}`
-        : `${API_HOST}:${API_PORT}/admin/update/user/${user.id}`;
+        ? `${process.env.REACT_APP_URL_AUTH}/admin/update/partner/${user.id}`
+        : `${process.env.REACT_APP_URL_AUTH}/admin/update/user/${user.id}`;
 
       const updatedStatus = !user.disabled;
       console.log(updatedStatus);
@@ -141,8 +138,8 @@ const UserManagement = ({ accessToken }) => {
     try {
       if (isEditing) {
         const apiUrl = isPartner
-          ? `${API_HOST}:${API_PORT}/admin/update/partner/${currentUser.partner?.id}`
-          : `${API_HOST}:${API_PORT}/admin/update/user/${currentUser.id}`;
+          ? `${process.env.REACT_APP_URL_AUTH}/admin/update/partner/${currentUser.partner?.id}`
+          : `${process.env.REACT_APP_URL_AUTH}/admin/update/user/${currentUser.id}`;
         if (isPartner) {
           currentUser.gpsLat = parseFloat(currentUser.gpsLat) || 0;
           currentUser.gpsLong = parseFloat(currentUser.gpsLong) || 0;
@@ -154,8 +151,8 @@ const UserManagement = ({ accessToken }) => {
       } else {
         console.log("Create");
         const apiUrl = isPartner
-          ? `${API_HOST}:${API_PORT}/admin/create/partner`
-          : `${API_HOST}:${API_PORT}/admin/create/user`;
+          ? `${process.env.REACT_APP_URL_AUTH}/admin/create/partner`
+          : `${process.env.REACT_APP_URL_AUTH}/admin/create/user`;
         console.log(currentUser);
         if (isPartner) {
           currentUser.gpsLat = parseFloat(currentUser.gpsLat) || 0;
@@ -185,7 +182,7 @@ const UserManagement = ({ accessToken }) => {
     }
     try {
       await axios.delete(
-        `${API_HOST}:${API_PORT}/admin/removeAccount`,
+        `${process.env.REACT_APP_URL_AUTH}/admin/removeAccount`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,

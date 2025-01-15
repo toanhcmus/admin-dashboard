@@ -3,8 +3,6 @@ import { Table, Button, Modal, Alert } from "react-bootstrap";
 import axios from "axios";
 import './EventManagement.css';
 
-const API_HOST = "http://localhost:1001";
-
 const EventManagement = ({ accessToken }) => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -15,7 +13,7 @@ const EventManagement = ({ accessToken }) => {
 
   const fetchEvents = async () => {
     try {
-      const response = await axios.get(`${API_HOST}/event-unauth/all`);
+      const response = await axios.get(`${process.env.REACT_APP_URL_EVENT}/unauth/event/all`);
       setEvents(response.data);
     } catch (err) {
       setError("Failed to fetch games.");
@@ -31,7 +29,7 @@ const EventManagement = ({ accessToken }) => {
   const handleApprove = async (eventId, isApproved) => {
     try {
       await axios.post(
-        `${API_HOST}/event-admin/validate`,
+        `${process.env.REACT_APP_URL_EVENT}/admin/validate`,
         {
           eventId: String(eventId),
           isApproved: String(isApproved),
@@ -58,7 +56,7 @@ const EventManagement = ({ accessToken }) => {
   const handleViewDetails = async (eventId) => {
     try {
       const response = await axios.get(
-        `${API_HOST}/game-event-unauth/query?eventId=${eventId}`
+        `${process.env.REACT_APP_URL_GAME}/game-event/unauth/query?eventId=${eventId}`
       );
       setEventGames(response.data);
       const selectedEvent = events.find((event) => event.id === eventId);

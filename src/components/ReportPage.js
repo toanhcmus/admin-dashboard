@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Line, Bar } from "react-chartjs-2";
+import { Line} from "react-chartjs-2";
 import { Chart, registerables } from "chart.js"; // Import Chart và registerables
 import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
 import axios from "axios";
@@ -26,7 +26,7 @@ const ReportPage = () => {
   const fetchEventStats = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:1001/event-unauth/stats/events-by-day?start=${startDate}&end=${endDate}`
+        `${process.env.REACT_APP_URL_EVENT}/unauth/event/stats/events-by-day?start=${startDate}&end=${endDate}`
       );
       console.log(response.data);
       setEventStats(response.data);
@@ -38,7 +38,7 @@ const ReportPage = () => {
   const fetchTopEvents = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:1001/event-unauth/stats/top-joined-events?top=3`
+        `${process.env.REACT_APP_URL_EVENT}/unauth/event/stats/top-joined-events?top=3`
       );
       console.log(response.data);
       setTopEvents(response.data);
@@ -50,7 +50,7 @@ const ReportPage = () => {
   const fetchNewAccounts = async (role) => {
     try {
       const response = await axios.post(
-        `http://localhost:3002/auth/unauthen/statistic/getNewlyRegisteredAccounts`,
+        `${process.env.REACT_APP_URL_AUTH}/auth/unauthen/statistic/getNewlyRegisteredAccounts`,
         { role, days: 30 }
       );
       console.log(response.data);

@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Menu, MenuItem, IconButton, Badge } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import './Header.css';
+import { initWebSocket, closeWebSocket } from "../services/socketService";
 
 const Header = ({ setAccessToken }) => {
   const location = useLocation();
@@ -36,8 +37,18 @@ const Header = ({ setAccessToken }) => {
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
+    closeWebSocket();
     window.location.href = "/";
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      initWebSocket(token);
+    }
+
+    return () => closeWebSocket();
+  }, []);
 
   return (
     <Navbar expand="lg" className="navbar-custom">

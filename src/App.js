@@ -11,7 +11,6 @@ import "./App.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import ReportPage from "./components/ReportPage";
 
-
 function App() {
   const [accessToken, setAccessToken] = useState(localStorage.getItem("accessToken") || "");
   const PrivateRoute = ({ children }) => {

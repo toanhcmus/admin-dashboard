@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, Alert, Container } from "react-bootstrap";
 import axios from "axios";
+import { initWebSocket, closeWebSocket } from "../services/socketService";
 
 const Login = ({ setAccessToken }) => {
   const [username, setUsername] = useState("");
@@ -12,35 +13,28 @@ const Login = ({ setAccessToken }) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-  
     try {
-      const response = await axios.post("http://localhost:1001/unauthen/login", {
-        username,
-        password,
-      });
-  
+      const response = await axios.post(`${process.env.REACT_APP_URL_AUTH}/auth/unauthen/login`, { username, password });
       const { accessToken, role } = response.data;
   
       if (role !== "ADMIN") {
         throw new Error("You are not authorized to access the admin panel.");
       }
   
-      // Save token to localStorage
       localStorage.setItem("accessToken", accessToken);
-  
-      // Update state
       setAccessToken(accessToken);
   
-      // Redirect to dashboard
-      window.location.href = "/dashboard";
+      // Khởi tạo WebSocket
+      initWebSocket(accessToken);
+  
+      window.location.href = "/";
     } catch (err) {
-      setError(err.response?.data?.message || err.message || "Invalid username or password. Please try again.");
+      setError(err.response?.data?.message || err.message || "Invalid login.");
     } finally {
       setLoading(false);
     }
   };
   
-
   return (
     <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh" }}>
       <div className="login-form-container">

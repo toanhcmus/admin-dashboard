@@ -11,8 +11,6 @@ const GameManagement = ({ accessToken }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const API_HOST = "http://localhost:1001";
-
   // Lấy danh sách trò chơi từ API
   useEffect(() => {
     fetchGames();
@@ -20,7 +18,7 @@ const GameManagement = ({ accessToken }) => {
 
   const fetchGames = async () => {
     try {
-      const response = await axios.get(`${API_HOST}/game-unauth/all`);
+      const response = await axios.get(`${process.env.REACT_APP_URL_GAME}/unauth/all`);
       setGames(response.data);
     } catch (err) {
       setError("Failed to fetch games.");
@@ -47,7 +45,7 @@ const GameManagement = ({ accessToken }) => {
       if (isEditing) {
         // Cập nhật trò chơi
         await axios.post(
-          `${API_HOST}/game-admin/update`,
+          `${process.env.REACT_APP_URL_GAME}/admin/update`,
           {
             id: currentGame.id,
             name: currentGame.name,
@@ -67,7 +65,7 @@ const GameManagement = ({ accessToken }) => {
       } else {
         // Tạo trò chơi mới
         const response = await axios.post(
-          `${API_HOST}/game-admin/create`,
+          `${process.env.REACT_APP_URL_GAME}/admin/create`,
           {
             name: currentGame.name,
             description: currentGame.description,
@@ -89,7 +87,7 @@ const GameManagement = ({ accessToken }) => {
   const handleDeleteGame = async (gameId) => {
     try {
       await axios.post(
-        `${API_HOST}/game-admin/delete`,
+        `${process.env.REACT_APP_URL_GAME}/admin/delete`,
         { id: gameId },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
@@ -101,33 +99,6 @@ const GameManagement = ({ accessToken }) => {
       setError("Failed to delete game.");
     }
   };  
-
-  // const handleToggleStatus = async (game) => {
-  //   try {
-  //     const updatedStatus = game.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
-  
-  //     await axios.post(
-  //       `${API_HOST}/game-admin/update`,
-  //       {
-  //         id: game.id,
-  //         name: game.name,
-  //         description: game.description,
-  //         status: updatedStatus,
-  //       },
-  //       { headers: { Authorization: `Bearer ${accessToken}` } }
-  //     );
-  
-  //     setGames((prevGames) =>
-  //       prevGames.map((g) =>
-  //         g.id === game.id ? { ...g, status: updatedStatus } : g
-  //       )
-  //     );
-  //     setSuccess(`Game ${updatedStatus === "ACTIVE" ? "activated" : "deactivated"} successfully.`);
-  //   } catch (err) {
-  //     setError("Failed to toggle game status.");
-  //   }
-  // };
-  
   return (
     <div>
       <h2>Game Management</h2>
