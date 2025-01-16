@@ -98,6 +98,19 @@ const GameManagement = ({ accessToken }) => {
       setError("Failed to delete game.");
     }
   };  
+
+  useEffect(() => {
+      if (error || success) {
+        const timer = setTimeout(() => {
+          setError("");
+          setSuccess("");
+        }, 10000); // 30 giây
+    
+        // Dọn dẹp bộ đếm thời gian khi component unmount hoặc giá trị thay đổi
+        return () => clearTimeout(timer);
+      }
+  }, [error, success]);
+
   return (
     <div>
       <h2>Quản lý trò chơi</h2>

@@ -9,7 +9,6 @@ Chart.register(...registerables);
 
 const ReportPage = () => {
   const [eventStats, setEventStats] = useState([]);
-  const [topEvents, setTopEvents] = useState([]);
   const [newUsers, setNewUsers] = useState([]);
   const [newPartners, setNewPartners] = useState([]);
   const [startDate, setStartDate] = useState("2025-01-01");
@@ -18,7 +17,6 @@ const ReportPage = () => {
 
   useEffect(() => {
     fetchEventStats();
-    fetchTopEvents();
     fetchNewAccounts("USER");
     fetchNewAccounts("PARTNER");
   }, []);
@@ -32,18 +30,6 @@ const ReportPage = () => {
       setEventStats(response.data);
     } catch (error) {
       console.error("Error fetching event stats", error);
-    }
-  };
-
-  const fetchTopEvents = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_URL_EVENT}/unauth/event/stats/top-joined-events?top=3`
-      );
-      console.log(response.data);
-      setTopEvents(response.data);
-    } catch (error) {
-      console.error("Error fetching top events", error);
     }
   };
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, Alert, Container } from "react-bootstrap";
 import axios from "axios";
+import './Login.css';
 
 const Login = ({ setAccessToken }) => {
   const [username, setUsername] = useState("");
@@ -34,7 +35,8 @@ const Login = ({ setAccessToken }) => {
   return (
     <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: "100vh" }}>
       <div className="login-form-container">
-        <h2>Đăng nhập - VOU ADMIN</h2>
+        <h2>Đăng nhập</h2>
+        <h2>VOU ADMIN</h2>
         {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={handleLogin}>
           <Form.Group controlId="username" className="mb-3">
